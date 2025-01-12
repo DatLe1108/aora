@@ -11,7 +11,7 @@ type TabIconProps = {
 
 const TabIcon = ({ icon, color, name, focused }: TabIconProps) => {
   return (
-    <View className="flex items-center justify-center gap-2 w-24">
+    <View className="flex-1 mt-3 flex flex-col items-center">
       <Image
         source={icon}
         resizeMode="contain"
@@ -19,7 +19,10 @@ const TabIcon = ({ icon, color, name, focused }: TabIconProps) => {
         className="w-6 h-6"
       />
       <Text
-        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
+        className={`${
+          focused ? "font-psemibold" : "font-pregular"
+        } text-xs w-full text-center mt-1`}
+        style={{ color: color }}
       >
         {name}
       </Text>
@@ -33,6 +36,14 @@ const TabsLayout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
+          tabBarActiveTintColor: "#FFA001",
+          tabBarInactiveTintColor: "#CDCDE0",
+          tabBarStyle: {
+            backgroundColor: "#161622",
+            borderTopWidth: 1,
+            borderTopColor: "#232533",
+            height: 84,
+          },
         }}
       >
         <Tabs.Screen
