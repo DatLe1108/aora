@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 import { icons } from "../constants";
 
-type FormFieldTypes = {
+type FormFieldProps = {
   title: string;
   value: string;
   placeholder?: string;
@@ -19,7 +19,7 @@ const FormField = ({
   handleChangeText,
   otherStyles,
   ...props
-}: FormFieldTypes) => {
+}: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
