@@ -14,16 +14,15 @@ import SearchInput from "@/components/SearchInput";
 import Trending from "@/components/Trending";
 import EmptyState from "@/components/EmptyState";
 import { getErrorMessage } from "@/utils/utils";
-import { getAllPost } from "@/lib/appwrite";
+import { getAllPost, getLatestPost } from "@/lib/appwrite";
 import { Models } from "react-native-appwrite";
 import useAppwrite from "@/hooks/useAppwrite";
 import VideoCard from "@/components/VideoCard";
 
 const Home = () => {
   const { data: posts, refetch } = useAppwrite({ fn: getAllPost });
+  const { data: latestPosts } = useAppwrite({ fn: getLatestPost });
   const [refreshing, setRefreshing] = useState(false);
-
-  console.info(posts);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -34,8 +33,8 @@ const Home = () => {
   return (
     <SafeAreaView className="bg-primary  h-full">
       <FlatList
-        data={posts}
-        keyExtractor={(item) => String(item.id)}
+        data={posts ?? []}
+        keyExtractor={(item, idx) => String(idx)}
         renderItem={({ item }) => <VideoCard video={item} />}
         ListHeaderComponent={() => (
           <View className="my-6 px-4 space-y-6">
@@ -61,7 +60,7 @@ const Home = () => {
               <Text className="text-gray-100 text-lg font-pregular mb-3">
                 Latest Video
               </Text>
-              <Trending posts={[{ id: 1 }, { id: 2 }, { id: 3 }]} />
+              <Trending posts={latestPosts ?? []} />
             </View>
           </View>
         )}

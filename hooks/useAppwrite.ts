@@ -1,4 +1,3 @@
-import { getAllPost } from "@/lib/appwrite";
 import { getErrorMessage } from "@/utils/utils";
 import { useState, useEffect } from "react";
 import { Alert } from "react-native";
@@ -15,7 +14,7 @@ const useAppwrite = ({ fn }: useAppwriteProps) => {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await getAllPost();
+      const response = await fn();
       setData(response);
     } catch (error: unknown) {
       Alert.alert("Error", getErrorMessage(error));
