@@ -9,90 +9,72 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 
-import * as Animatable from "react-native-animatable";
 import { Models } from "react-native-appwrite";
 
 import { useVideoPlayer, VideoView } from "expo-video";
 
 import { icons } from "../constants";
-
-const zoomIn = {
-  0: {
-    scale: 0.9,
-    opacity: 1,
-  },
-
-  1: {
-    scale: 1,
-    opacity: 1,
-  },
-};
-
-const zoomOut = {
-  0: {
-    scale: 1,
-    opacity: 1,
-  },
-
-  1: {
-    scale: 0.9,
-    opacity: 1,
-  },
-};
+import { useEvent } from "expo";
 
 type TrendingItemProps = {
   activeItemId: string | undefined;
   item: Models.Document;
 };
 const TrendingItem = ({ activeItemId, item }: TrendingItemProps) => {
-  const [play, setPlay] = React.useState(false);
-  console.info(item.video);
   const player = useVideoPlayer(
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    (player) => {
-      player.loop = true;
-      player.play();
-    }
+    (player) => {}
   );
 
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
+
+  useEffect(() => {
+    if (activeItemId !== item.$id) {
+      player.pause();
+    }
+  }, [activeItemId, isPlaying]);
+
   return (
-    <Animatable.View
-      className="mr-5"
-      animation={activeItemId === item.$id ? zoomIn : zoomOut}
-      duration={500}
+    <View
+      className={`mr-5 transition duration-500 ${
+        activeItemId === item.$id ? "scale-100" : "scale-90"
+      }`}
     >
-      {play ? (
-        <>
-          <Text>hello</Text>
-          <VideoView
-            player={player}
-            style={{
-              width: 350,
-              height: 275,
-              flex: 1,
-              padding: 10,
-              alignItems: "center",
-              justifyContent: "center",
-              paddingHorizontal: 50,
-              padding: 10,
-            }}
-            // className="w-full h-60 rounded-xl  mt-3 "
-            contentFit="contain"
-            allowsFullscreen
-            allowsPictureInPicture
-          />
-        </>
+      {isPlaying ? (
+        <VideoView
+          player={player}
+          style={{
+            width: 208,
+            height: 288,
+            borderRadius: 35,
+            marginRight: 5,
+            overflow: "hidden",
+          }}
+          contentFit="cover"
+          allowsFullscreen
+          allowsPictureInPicture
+        />
       ) : (
         <TouchableOpacity
           className="relative justify-center items-center"
           activeOpacity={0.7}
-          onPress={() => setPlay(true)}
+          onPress={() => {
+            player.play();
+          }}
         >
           <ImageBackground
             source={{
               uri: item.thumbnail,
             }}
-            className="w-52 h-72 rounded-[35px] mr-5 overflow-hidden shadow-lg shadow-black/40"
+            style={{
+              width: 208,
+              height: 288,
+              borderRadius: 35,
+              marginRight: 5,
+              overflow: "hidden",
+            }}
             resizeMode="cover"
           />
           <Image
@@ -102,7 +84,7 @@ const TrendingItem = ({ activeItemId, item }: TrendingItemProps) => {
           />
         </TouchableOpacity>
       )}
-    </Animatable.View>
+    </View>
   );
 };
 
@@ -136,7 +118,6 @@ const Trending = ({ posts }: TrendingProps) => {
       viewabilityConfig={{
         itemVisiblePercentThreshold: 70,
       }}
-      contentOffset={{ x: 170, y: 100 }}
     />
   );
 };
