@@ -134,3 +134,14 @@ export const getLatestPost = async () => {
     throw new Error(getErrorMessage(error));
   }
 };
+
+export const searchPosts = async (query: string) => {
+  try {
+    const posts = await databases.listDocuments(databaseId, videoCollectionId, [
+      Query.search("title", query),
+    ]);
+    return posts.documents;
+  } catch (error: unknown) {
+    throw new Error(getErrorMessage(error));
+  }
+};
