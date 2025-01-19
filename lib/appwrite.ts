@@ -89,6 +89,15 @@ export const signIn = async (email: string, password: string) => {
   }
 };
 
+export const signOut = async () => {
+  try {
+    const session = await account.deleteSession("current");
+    return session;
+  } catch (error: unknown) {
+    throw new Error(getErrorMessage(error));
+  }
+};
+
 export const getCurrentUser = async (): Promise<Models.Document> => {
   try {
     const currentAccount = await account.get();
@@ -140,6 +149,21 @@ export const searchPosts = async (query: string | string[]) => {
     const searchQuery = typeof query === "string" ? query : query[0];
     const posts = await databases.listDocuments(databaseId, videoCollectionId, [
       Query.search("title", searchQuery),
+    ]);
+    return posts.documents;
+  } catch (error: unknown) {
+    throw new Error(getErrorMessage(error));
+  }
+};
+
+export const getUserPosts = async (userId: string | undefined) => {
+  if (!userId) {
+    throw new Error("User ID is required");
+  }
+
+  try {
+    const posts = await databases.listDocuments(databaseId, videoCollectionId, [
+      Query.equal("creator", userId),
     ]);
     return posts.documents;
   } catch (error: unknown) {

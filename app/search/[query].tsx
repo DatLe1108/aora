@@ -16,7 +16,6 @@ const Search = () => {
     fn: () => searchPosts(query),
   });
 
-  console.info(query, posts);
   useEffect(() => {
     refetch();
   }, [query]);
