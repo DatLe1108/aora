@@ -12,16 +12,15 @@ import InfoBox from "@/components/InfoBox";
 import { router } from "expo-router";
 
 const Profile = () => {
-  const { user, setUser, setIsLoggedIn } = useGlobalContext();
-  const { data: posts, refetch } = useAppwrite({
+  const { user, setIsLoggedIn } = useGlobalContext();
+  const { data: posts } = useAppwrite({
     fn: () => getUserPosts(user?.$id),
   });
 
   const logout = async () => {
-    console.info("Logging out");
     await signOut();
     setIsLoggedIn(false);
-    router.replace("/sign-in");
+    router.replace("/");
   };
 
   return (
