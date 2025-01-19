@@ -135,10 +135,11 @@ export const getLatestPost = async () => {
   }
 };
 
-export const searchPosts = async (query: string) => {
+export const searchPosts = async (query: string | string[]) => {
   try {
+    const searchQuery = typeof query === "string" ? query : query[0];
     const posts = await databases.listDocuments(databaseId, videoCollectionId, [
-      Query.search("title", query),
+      Query.search("title", searchQuery),
     ]);
     return posts.documents;
   } catch (error: unknown) {

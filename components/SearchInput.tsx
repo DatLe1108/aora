@@ -4,9 +4,17 @@ import React, { useState } from "react";
 import { icons } from "../constants";
 import { router, usePathname } from "expo-router";
 
-const SearchInput = () => {
+type SearchInputProps = {
+  initialQuery?: string | string[];
+};
+
+const SearchInput = ({ initialQuery }: SearchInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(
+    (typeof initialQuery === "string"
+      ? initialQuery
+      : initialQuery?.join("")) || ""
+  );
   const pathname = usePathname();
 
   return (
